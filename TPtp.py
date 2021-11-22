@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from scipy.signal import butter, lfilter, freqz
 from scipy.io import wavfile
@@ -5,8 +6,11 @@ import scipy
 import scipy.fftpack
 import matplotlib.pyplot as plt
 
+song = sys.argv[1]
+print(song)
+
 #General Definitions
-wav_fname = "song-estrellas.wav"
+wav_fname = song
 
 # Filter requirements.
 order = 6
@@ -18,27 +22,14 @@ cutoff_high = 5000.0
 def butter_lowpass(cutoff, fs, order=5):
     nyq = 0.5 * fs
     normal_cutoff = cutoff / nyq
-    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    type_filter = sys.argv[2]
+    b, a = butter(order, normal_cutoff, btype=type_filter, analog=False)
     return b, a
 
 def butter_lowpass_filter(data, cutoff, fs, order=5):
     b, a = butter_lowpass(cutoff, fs, order=order)
     y = lfilter(b, a, data)
     return y
-
-
-# TODO AGREGAR --- 
-def butter_highpass(cutoff, fs, order=5):
-    nyq = 0.5 * fs
-    normal_cutoff = cutoff / nyq
-    b, a = butter(order, normal_cutoff, btype='high', analog=False)
-    return b, a
-
-def butter_highpass_filter(data, cutoff, fs, order=5):
-    b, a = butter_highpass(cutoff, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
-# TODO AGREGAR --- 
 
 #read the wav file
 samplerate, data = wavfile.read(wav_fname)
